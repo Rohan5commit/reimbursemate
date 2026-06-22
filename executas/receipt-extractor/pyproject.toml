@@ -1,0 +1,10 @@
+[project]
+name = "receipt-extractor"
+version = "1.0.0"
+description = "Receipt extraction tool for ReimburseMate Anna app"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

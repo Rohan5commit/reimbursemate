@@ -1,0 +1,37 @@
+{
+  "schema": 2,
+  "permissions": [
+    "chat.write_message",
+    "chat.read_history",
+    "tools.invoke"
+  ],
+  "required_executas": [
+    "bundled:receipt-extractor"
+  ],
+  "host_api": {
+    "llm": ["complete"],
+    "chat": ["write_message", "read_history", "append_artifact"],
+    "tools": ["invoke"],
+    "window": ["set_title"],
+    "storage": ["get", "set"],
+    "agent": {
+      "session": {
+        "auto": true
+      }
+    }
+  },
+  "ui": {
+    "bundle": {
+      "format": "static-spa",
+      "entry": "index.html"
+    },
+    "window": {
+      "default_width": 900,
+      "default_height": 700,
+      "min_width": 600,
+      "min_height": 500,
+      "resizable": true
+    }
+  },
+  "system_prompt_addendum": "You are helping a user process expense reimbursements. When the user provides a receipt, use the receipt-extractor tool to extract structured fields. After extraction, present the results to the user for review. Always require explicit human approval before finalizing any reimbursement submission."
+}

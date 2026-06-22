@@ -1,0 +1,15 @@
+{
+  "name": "ReimburseMate",
+  "slug": "reimbursemate",
+  "version": "1.0.0",
+  "tagline": "AI-native reimbursement agent for receipts, expenses, and human-approved submissions.",
+  "description": "ReimburseMate turns messy receipts and expense claims into structured reimbursement drafts with AI extraction, deterministic policy checks, and mandatory human approval before submission.",
+  "category": "productivity",
+  "icon": "./public/icon.png",
+  "bundled_executas": {
+    "receipt-extractor": {
+      "path": "./executas/receipt-extractor",
+      "description": "Extracts structured fields (merchant, amount, date, tax, category) from receipt text or images using NVIDIA NIM."
+    }
+  }
+}
