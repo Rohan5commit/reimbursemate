@@ -161,5 +161,5 @@ npm test
 - [Setup](docs/setup.md) — Installation guide
 - [Prompts Used](docs/prompts-used.md) — AI prompt design
 - [AI Build Log](docs/ai-build-log.md) — Development record
-- [Judging Hook](docs/judging-hook.md) — Why this scores well
+- [Scoring Rationale](docs/scoring-rationale.md) — Honest trade-off discussion
 - [Credits](docs/credits.md) — Attribution
