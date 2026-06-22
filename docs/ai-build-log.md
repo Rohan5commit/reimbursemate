@@ -16,7 +16,7 @@
 ### Phase 3: AI Integration
 - Built NVIDIA NIM client with OpenAI-compatible API
 - Designed structured extraction prompts for receipt parsing
-- Implemented image OCR via `nvidia/neva-22b` vision model
+- Implemented image OCR via `nvidia/llama-3.2-90b-vision-instruct` vision model
 - Added schema validation on all AI outputs
 - Implemented retry/manual-entry fallback on extraction failure
 
@@ -53,4 +53,4 @@
 ## AI Model Choices
 
 - **nvidia/llama-3.1-nemotron-70b-instruct**: Best for structured text extraction
-- **nvidia/neva-22b**: Vision model for receipt image OCR
+- **nvidia/llama-3.2-90b-vision-instruct**: Vision model for receipt image OCR

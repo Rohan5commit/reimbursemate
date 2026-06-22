@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     if (mode === "image" && imageDataUrl) {
       // Vision model for image extraction
       data = await callNIM({
-        model: "nvidia/neva-22b",
+        model: "nvidia/llama-3.2-90b-vision-instruct",
         messages: [
           {
             role: "user",

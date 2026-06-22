@@ -12,7 +12,7 @@
 ### AI & Inference
 - **NVIDIA NIM** — AI inference platform
   - `nvidia/llama-3.1-nemotron-70b-instruct` — Text extraction
-  - `nvidia/neva-22b` — Image OCR
+  - `nvidia/llama-3.2-90b-vision-instruct` — Image OCR
 
 ### UI Components
 - **Lucide React** — Icon library

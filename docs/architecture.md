@@ -23,7 +23,7 @@ ReimburseMate is a single-page React application built with Next.js 16, TypeScri
 
 1. User provides receipt data (image, PDF text, or pasted text)
 2. `nim-client.ts` sends structured prompt to NVIDIA NIM (`nvidia/llama-3.1-nemotron-70b-instruct`)
-3. For images, uses `nvidia/neva-22b` vision model
+3. For images, uses `nvidia/llama-3.2-90b-vision-instruct` vision model
 4. Response is parsed as JSON and validated against `ParsedReceiptSchema`
 5. Invalid outputs trigger retry/manual-entry path — never silently corrupt state
 

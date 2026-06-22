@@ -35,7 +35,7 @@ ReimburseMate uses the Anna platform's real SDK integration:
 | Feature | Model | Purpose |
 |---------|-------|---------|
 | Receipt text extraction | `nvidia/llama-3.1-nemotron-70b-instruct` | Parse receipt text into structured fields |
-| Image receipt extraction | `nvidia/neva-22b` | Read receipt images and extract structured fields |
+| Image receipt extraction | `nvidia/llama-3.2-90b-vision-instruct` | Read receipt images and extract structured fields |
 | Category suggestion | Text model | Suggest expense category from receipt context |
 | Purpose suggestion | Text model | Infer business purpose from receipt data |
 | Confidence scoring | Text model | Rate extraction reliability (0-100%) |
@@ -140,7 +140,7 @@ npm test
 - Requires NVIDIA NIM API key for AI features
 - No backend storage — state is in-memory
 - No multi-user support
-- Policy rules are hardcoded (not configurable)
+- Policy rules are now configurable via the Settings modal
 
 ## Tech Stack
 

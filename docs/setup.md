@@ -55,7 +55,7 @@ npm start
 ### Models Used
 
 - **Text extraction**: `nvidia/llama-3.1-nemotron-70b-instruct`
-- **Image OCR**: `nvidia/neva-22b`
+- **Image OCR**: `nvidia/llama-3.2-90b-vision-instruct`
 
 ## Project Structure
 

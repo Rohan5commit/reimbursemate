@@ -49,7 +49,7 @@ export async function extractReceipt(text: string): Promise<ParsedReceipt> {
 
 /**
  * Extract receipt data from an image via the server-side API route.
- * Uses NVIDIA NIM vision model (neva-22b) for image understanding.
+ * Uses NVIDIA NIM vision model (llama-3.2-90b-vision-instruct) for image understanding.
  */
 export async function extractFromImage(
   imageDataUrl: string
