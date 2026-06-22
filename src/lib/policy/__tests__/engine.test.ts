@@ -1,4 +1,5 @@
 import { checkPolicy, getNextAction, resetDuplicateTracking, trackClaim } from "../engine";
+import type { PolicyConfig } from "../../schemas";
 
 beforeEach(() => {
   resetDuplicateTracking();
@@ -129,6 +130,62 @@ describe("duplicate detection", () => {
       hasReceipt: true,
     });
     expect(warnings.some((w) => w.code === "POSSIBLE_DUPLICATE")).toBe(false);
+  });
+});
+
+describe("custom policy config", () => {
+  const strictConfig: PolicyConfig = {
+    warningThreshold: 25,
+    approvalThreshold: 50,
+    missingReceiptThreshold: 10,
+  };
+
+  it("uses custom warning threshold", () => {
+    const warnings = checkPolicy({
+      merchant: "Cafe",
+      amount: 30,
+      date: "2026-06-20",
+      category: "meals",
+      purpose: "Coffee",
+      hasReceipt: true,
+    }, strictConfig);
+    expect(warnings.some((w) => w.code === "HIGH_AMOUNT")).toBe(true);
+  });
+
+  it("uses custom approval threshold", () => {
+    const warnings = checkPolicy({
+      merchant: "Store",
+      amount: 60,
+      date: "2026-06-20",
+      category: "office_supplies",
+      purpose: "Supplies",
+      hasReceipt: true,
+    }, strictConfig);
+    expect(warnings.some((w) => w.code === "APPROVAL_REQUIRED")).toBe(true);
+  });
+
+  it("uses custom missing receipt threshold", () => {
+    const warnings = checkPolicy({
+      merchant: "Store",
+      amount: 15,
+      date: "2026-06-20",
+      category: "office_supplies",
+      purpose: "Supplies",
+      hasReceipt: false,
+    }, strictConfig);
+    expect(warnings.some((w) => w.code === "MISSING_RECEIPT")).toBe(true);
+  });
+
+  it("defaults to standard thresholds when no config provided", () => {
+    const warnings = checkPolicy({
+      merchant: "Cafe",
+      amount: 30,
+      date: "2026-06-20",
+      category: "meals",
+      purpose: "Coffee",
+      hasReceipt: true,
+    });
+    expect(warnings.some((w) => w.code === "HIGH_AMOUNT")).toBe(false);
   });
 });
 

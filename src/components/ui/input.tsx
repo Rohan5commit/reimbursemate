@@ -6,10 +6,11 @@ import { forwardRef, type InputHTMLAttributes } from "react";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  description?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, id, ...props }, ref) => {
+  ({ className, label, error, description, id, ...props }, ref) => {
     return (
       <div className="space-y-1.5">
         {label && (
@@ -30,6 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
           {...props}
         />
+        {description && !error && <p className="text-xs text-[var(--muted-foreground)]">{description}</p>}
         {error && <p className="text-xs text-[var(--destructive)]">{error}</p>}
       </div>
     );

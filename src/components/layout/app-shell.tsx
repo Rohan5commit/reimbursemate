@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { useApp } from "@/lib/state/store";
-import { RotateCcw, Sparkles } from "lucide-react";
+import { SettingsModal } from "@/components/ui/settings-modal";
+import { RotateCcw, Sparkles, Settings } from "lucide-react";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { state, reset, setStep } = useApp();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
+    <>
     <div className="min-h-screen bg-[var(--background)]">
       {/* Top Nav */}
       <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-sm">
@@ -23,15 +27,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             ReimburseMate
           </button>
 
-          {state.step !== "landing" && (
+          <div className="flex items-center gap-1">
             <button
-              onClick={reset}
+              onClick={() => setSettingsOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-all"
+              title="Policy Settings"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Reset
+              <Settings className="h-3.5 w-3.5" />
+              Settings
             </button>
-          )}
+            {state.step !== "landing" && (
+              <button
+                onClick={reset}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-all"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -71,5 +85,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main className="max-w-4xl mx-auto pb-12">{children}</main>
 
     </div>
+
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+    </>
   );
 }

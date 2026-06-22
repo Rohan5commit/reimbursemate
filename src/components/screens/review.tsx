@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 export function ReviewScreen() {
-  const { state, setDraft, setStep, generateFinalNote } = useApp();
+  const { state, setDraft, setStep, generateFinalNote, policyConfig } = useApp();
   const { draft } = state;
 
   const [editing, setEditing] = useState(false);
@@ -56,7 +56,7 @@ export function ReviewScreen() {
       notes: editValues.notes,
     };
 
-    // Re-run policy checks with updated values
+    // Re-run policy checks with updated values (using current config)
     const newWarnings = checkPolicy({
       merchant: updatedDraft.merchant,
       amount: updatedDraft.amount,
@@ -65,7 +65,7 @@ export function ReviewScreen() {
       purpose: updatedDraft.purpose,
       hasReceipt: true,
       submitterName: updatedDraft.submitterName,
-    });
+    }, policyConfig);
 
     updatedDraft.warnings = newWarnings;
     updatedDraft.nextAction = getNextAction(newWarnings);

@@ -1,7 +1,6 @@
 import type { PolicyWarning } from "../schemas";
+import { defaultPolicyConfig, type PolicyConfig } from "../schemas";
 
-const AMOUNT_THRESHOLD_WARNING = 75;
-const AMOUNT_THRESHOLD_APPROVAL = 150;
 const REQUIRED_FIELDS = ["merchant", "amount", "date", "category", "purpose"];
 
 const KNOWN_CATEGORIES = [
@@ -46,28 +45,31 @@ export function checkPolicy(fields: {
   missingFields?: string[];
   hasReceipt?: boolean;
   submitterName?: string;
-}): PolicyWarning[] {
+},
+  config: PolicyConfig = defaultPolicyConfig
+): PolicyWarning[] {
   const warnings: PolicyWarning[] = [];
+  const { warningThreshold, approvalThreshold, missingReceiptThreshold } = config;
 
   // 1. Amount threshold warnings
-  if (fields.amount > AMOUNT_THRESHOLD_APPROVAL) {
+  if (fields.amount > approvalThreshold) {
     warnings.push({
       code: "APPROVAL_REQUIRED",
       severity: "error",
-      message: `Amount $${fields.amount.toFixed(2)} exceeds $${AMOUNT_THRESHOLD_APPROVAL} — requires manager approval.`,
+      message: `Amount $${fields.amount.toFixed(2)} exceeds $${approvalThreshold} — requires manager approval.`,
       field: "amount",
     });
-  } else if (fields.amount > AMOUNT_THRESHOLD_WARNING) {
+  } else if (fields.amount > warningThreshold) {
     warnings.push({
       code: "HIGH_AMOUNT",
       severity: "warning",
-      message: `Amount $${fields.amount.toFixed(2)} is above $${AMOUNT_THRESHOLD_WARNING} threshold.`,
+      message: `Amount $${fields.amount.toFixed(2)} is above $${warningThreshold} threshold.`,
       field: "amount",
     });
   }
 
   // 2. Missing receipt check
-  if (fields.hasReceipt === false && fields.amount > 25) {
+  if (fields.hasReceipt === false && fields.amount > missingReceiptThreshold) {
     warnings.push({
       code: "MISSING_RECEIPT",
       severity: "warning",

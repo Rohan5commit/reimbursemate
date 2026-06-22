@@ -12,12 +12,30 @@ import type {
   ParsedReceipt,
   ReimbursementDraft,
   FinalSubmissionNote,
+  PolicyConfig,
 } from "../schemas";
-import { defaultAppState } from "../schemas";
+import { defaultAppState, defaultPolicyConfig } from "../schemas";
 import { checkPolicy, getNextAction, trackClaim, resetDuplicateTracking } from "../policy/engine";
+
+function loadPolicyConfig(): PolicyConfig {
+  if (typeof window === "undefined") return defaultPolicyConfig;
+  try {
+    const raw = localStorage.getItem("reimbursemate_policy_config");
+    if (!raw) return defaultPolicyConfig;
+    const parsed = JSON.parse(raw);
+    return {
+      warningThreshold: typeof parsed.warningThreshold === "number" ? parsed.warningThreshold : defaultPolicyConfig.warningThreshold,
+      approvalThreshold: typeof parsed.approvalThreshold === "number" ? parsed.approvalThreshold : defaultPolicyConfig.approvalThreshold,
+      missingReceiptThreshold: typeof parsed.missingReceiptThreshold === "number" ? parsed.missingReceiptThreshold : defaultPolicyConfig.missingReceiptThreshold,
+    };
+  } catch {
+    return defaultPolicyConfig;
+  }
+}
 
 interface AppContextValue {
   state: AppRunState;
+  policyConfig: PolicyConfig;
   setStep: (step: AppRunState["step"]) => void;
   setInputMethod: (method: AppRunState["inputMethod"]) => void;
   setParsedReceipt: (receipt: ParsedReceipt | null) => void;
@@ -26,6 +44,7 @@ interface AppContextValue {
   setFinalNote: (note: FinalSubmissionNote | null) => void;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
+  setPolicyConfig: (config: PolicyConfig) => void;
   generateDraft: (receipt: ParsedReceipt, answers: Record<string, string>) => void;
   generateFinalNote: () => void;
   reset: () => void;
@@ -35,6 +54,14 @@ const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppRunState>(defaultAppState);
+  const [policyConfig, setPolicyConfigState] = useState<PolicyConfig>(loadPolicyConfig);
+
+  const setPolicyConfig = useCallback((config: PolicyConfig) => {
+    setPolicyConfigState(config);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("reimbursemate_policy_config", JSON.stringify(config));
+    }
+  }, []);
 
   const setStep = useCallback((step: AppRunState["step"]) => {
     setState((s) => ({ ...s, step }));
@@ -82,7 +109,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         missingFields: receipt.missingFields,
         hasReceipt: true,
         submitterName: answers.submitterName || "Current User",
-      });
+      }, policyConfig);
 
       const nextAction = getNextAction(warnings);
 
@@ -110,7 +137,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       trackClaim(receipt.merchant, receipt.date, receipt.amount);
       setState((s) => ({ ...s, draft, step: "review" }));
     },
-    []
+    [policyConfig]
   );
 
   const generateFinalNote = useCallback(() => {
@@ -198,6 +225,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider
       value={{
         state,
+        policyConfig,
         setStep,
         setInputMethod,
         setParsedReceipt,
@@ -206,6 +234,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setFinalNote,
         setError,
         setLoading,
+        setPolicyConfig,
         generateDraft,
         generateFinalNote,
         reset,

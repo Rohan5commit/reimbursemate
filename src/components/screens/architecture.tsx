@@ -106,8 +106,7 @@ export function ArchitectureScreen() {
         <CardContent className="space-y-3">
           {[
             {
-              label: "Amount Threshold Checks",
-              desc: "Warns above $75, requires approval above $150.",
+              label: "Amount Threshold Checks",               desc: "Configurable thresholds (default: warn above $75, approval above $150). Users can customize via Settings.",
             },
             {
               label: "Missing Receipt Detection",

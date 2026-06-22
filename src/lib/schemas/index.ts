@@ -39,6 +39,21 @@ export const MissingFieldSchema = z.object({
 
 export type MissingField = z.infer<typeof MissingFieldSchema>;
 
+// ── Policy configuration ───────────────────────────────────────────
+export const PolicyConfigSchema = z.object({
+  warningThreshold: z.number().min(0).default(75),
+  approvalThreshold: z.number().min(0).default(150),
+  missingReceiptThreshold: z.number().min(0).default(25),
+});
+
+export type PolicyConfig = z.infer<typeof PolicyConfigSchema>;
+
+export const defaultPolicyConfig: PolicyConfig = {
+  warningThreshold: 75,
+  approvalThreshold: 150,
+  missingReceiptThreshold: 25,
+};
+
 // ── Policy warning ──────────────────────────────────────────────────
 export const PolicyWarningSchema = z.object({
   code: z.string(),
