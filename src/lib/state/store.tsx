@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import type {
@@ -16,6 +17,27 @@ import type {
 } from "../schemas";
 import { defaultAppState, defaultPolicyConfig } from "../schemas";
 import { checkPolicy, getNextAction, trackClaim, resetDuplicateTracking } from "../policy/engine";
+
+function loadPersistedState(): AppRunState {
+  if (typeof window === "undefined") return defaultAppState;
+  try {
+    const raw = localStorage.getItem("reimbursemate_app_state");
+    if (!raw) return defaultAppState;
+    const parsed = JSON.parse(raw);
+    // Only restore meaningful fields; always reset transient ones
+    return {
+      ...defaultAppState,
+      step: parsed.step || "landing",
+      inputMethod: parsed.inputMethod || null,
+      parsedReceipt: parsed.parsedReceipt || null,
+      followupAnswers: parsed.followupAnswers || {},
+      draft: parsed.draft || null,
+      finalNote: parsed.finalNote || null,
+    };
+  } catch {
+    return defaultAppState;
+  }
+}
 
 function loadPolicyConfig(): PolicyConfig {
   if (typeof window === "undefined") return defaultPolicyConfig;
@@ -53,7 +75,7 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AppRunState>(defaultAppState);
+  const [state, setState] = useState<AppRunState>(loadPersistedState);
   const [policyConfig, setPolicyConfigState] = useState<PolicyConfig>(loadPolicyConfig);
 
   const setPolicyConfig = useCallback((config: PolicyConfig) => {
@@ -62,6 +84,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("reimbursemate_policy_config", JSON.stringify(config));
     }
   }, []);
+
+  // Persist app state to localStorage on every change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("reimbursemate_app_state", JSON.stringify(state));
+    }
+  }, [state]);
 
   const setStep = useCallback((step: AppRunState["step"]) => {
     setState((s) => ({ ...s, step }));
@@ -219,6 +248,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const reset = useCallback(() => {
     resetDuplicateTracking();
     setState(defaultAppState);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("reimbursemate_app_state");
+    }
   }, []);
 
   return (
